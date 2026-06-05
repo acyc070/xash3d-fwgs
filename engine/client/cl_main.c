@@ -30,7 +30,7 @@ GNU General Public License for more details.
 #define CL_TEST_RETRIES       5
 
 CVAR_DEFINE_AUTO( showpause, "1", 0, "show pause logo when paused" );
-CVAR_DEFINE_AUTO( mp_decals, "300", FCVAR_ARCHIVE, "decals limit in multiplayer" );
+CVAR_DEFINE_AUTO( mp_decals, "4096", FCVAR_ARCHIVE, "decals limit in multiplayer" );
 static CVAR_DEFINE_AUTO( dev_overview, "0", 0, "draw level in overview-mode" );
 static CVAR_DEFINE_AUTO( cl_resend, "6.0", 0, "time to resend connect" );
 CVAR_DEFINE( cl_allow_download, "cl_allowdownload", "1", FCVAR_ARCHIVE, "allow to downloading resources from the server" );
@@ -49,7 +49,7 @@ CVAR_DEFINE( cl_draw_beams, "r_drawbeams", "1", FCVAR_CHEAT, "render beams" );
 
 static CVAR_DEFINE_AUTO( rcon_address, "", FCVAR_PRIVILEGED, "remote control address" );
 CVAR_DEFINE_AUTO( cl_timeout, "60", 0, "connect timeout (in-seconds)" );
-CVAR_DEFINE_AUTO( cl_nopred, "0", FCVAR_USERINFO, "disable client movement prediction" );
+CVAR_DEFINE_AUTO( cl_nopred, "1", FCVAR_USERINFO, "disable client movement prediction" );
 static CVAR_DEFINE_AUTO( cl_nodelta, "0", 0, "disable delta-compression for server messages" );
 CVAR_DEFINE( cl_crosshair, "crosshair", "1", FCVAR_ARCHIVE, "show weapon chrosshair" );
 static CVAR_DEFINE_AUTO( cl_cmdbackup, "10", FCVAR_ARCHIVE, "how many additional history commands are sent" );
@@ -57,10 +57,10 @@ CVAR_DEFINE_AUTO( cl_showerror, "0", FCVAR_ARCHIVE, "show prediction error" );
 CVAR_DEFINE_AUTO( cl_bmodelinterp, "1", 0, "enable bmodel interpolation" );
 static CVAR_DEFINE_AUTO( cl_lightstyle_lerping, "0", FCVAR_ARCHIVE, "enables animated light lerping (perfomance option)" );
 CVAR_DEFINE_AUTO( cl_idealpitchscale, "0.8", 0, "how much to look up/down slopes and stairs when not using freelook" );
-CVAR_DEFINE_AUTO( cl_nosmooth, "0", 0, "disable smooth up stair climbing" );
-CVAR_DEFINE_AUTO( cl_smoothtime, "0.1", 0, "time to smooth up" );
-CVAR_DEFINE_AUTO( cl_clockreset, "0.1", 0, "frametime delta maximum value before reset" );
-static CVAR_DEFINE_AUTO( cl_fixtimerate, "7.5", 0, "time in msec to client clock adjusting" );
+CVAR_DEFINE_AUTO( cl_nosmooth, "1", 0, "disable smooth up stair climbing" );
+CVAR_DEFINE_AUTO( cl_smoothtime, "0.0", 0, "time to smooth up" );
+CVAR_DEFINE_AUTO( cl_clockreset, "0.0", 0, "frametime delta maximum value before reset" );
+static CVAR_DEFINE_AUTO( cl_fixtimerate, "0.0", 0, "time in msec to client clock adjusting" );
 CVAR_DEFINE_AUTO( hud_fontscale, "1.0", FCVAR_ARCHIVE|FCVAR_LATCH, "scale hud font texture" );
 CVAR_DEFINE_AUTO( hud_fontrender, "0", FCVAR_ARCHIVE, "hud font render mode (0: additive, 1: holes, 2: trans)" );
 CVAR_DEFINE_AUTO( hud_scale, "0", FCVAR_ARCHIVE|FCVAR_LATCH, "scale hud at current resolution" );
@@ -69,7 +69,7 @@ CVAR_DEFINE_AUTO( cl_solid_players, "1", 0, "Make all players not solid (can't t
 CVAR_DEFINE_AUTO( cl_updaterate, "20", FCVAR_USERINFO|FCVAR_ARCHIVE, "refresh rate of server messages" );
 CVAR_DEFINE_AUTO( cl_showevents, "0", FCVAR_ARCHIVE, "show events playback" );
 CVAR_DEFINE_AUTO( cl_cmdrate, "30", FCVAR_ARCHIVE, "Max number of command packets sent to server per second" );
-CVAR_DEFINE( cl_interp, "ex_interp", "0.1", FCVAR_ARCHIVE | FCVAR_FILTERABLE, "Interpolate object positions starting this many seconds in past" );
+CVAR_DEFINE( cl_interp, "ex_interp", "0.0", FCVAR_ARCHIVE | FCVAR_FILTERABLE, "Interpolate object positions starting this many seconds in past" );
 CVAR_DEFINE_AUTO( cl_nointerp, "0", 0, "disable interpolation of entities and players" );
 static CVAR_DEFINE_AUTO( cl_dlmax, "0", FCVAR_USERINFO|FCVAR_ARCHIVE, "max allowed outcoming fragment size" );
 static CVAR_DEFINE_AUTO( cl_upmax, "508", FCVAR_ARCHIVE, "max allowed incoming fragment size" );
