@@ -23,15 +23,15 @@ CVAR_DEFINE_AUTO( sv_lan, "0", 0, "server is a lan server ( no heartbeat, no aut
 CVAR_DEFINE_AUTO( sv_lan_rate, "20000.0", 0, "rate for lan server" );
 CVAR_DEFINE_AUTO( sv_nat, "0", 0, "enable NAT bypass for this server" );
 CVAR_DEFINE_AUTO( sv_aim, "1", FCVAR_ARCHIVE|FCVAR_SERVER, "auto aiming option" );
-CVAR_DEFINE_AUTO( sv_allow_autoaim, "0", FCVAR_ARCHIVE|FCVAR_SERVER, "auto aiming option (for HL25 compatibility)" );
-CVAR_DEFINE_AUTO( sv_unlag, "1", 0, "allow lag compensation on server-side" );
-CVAR_DEFINE_AUTO( sv_maxunlag, "0.5", 0, "max latency value which can be interpolated (by default ping should not exceed 500 units)" );
+CVAR_DEFINE_AUTO( sv_allow_autoaim, "1", FCVAR_ARCHIVE|FCVAR_SERVER, "auto aiming option (for HL25 compatibility)" );
+CVAR_DEFINE_AUTO( sv_unlag, "0", 0, "allow lag compensation on server-side" );
+CVAR_DEFINE_AUTO( sv_maxunlag, "0.0", 0, "max latency value which can be interpolated (by default ping should not exceed 500 units)" );
 CVAR_DEFINE_AUTO( sv_unlagpush, "0.0", 0, "interpolation bias for unlag time" );
 CVAR_DEFINE_AUTO( sv_unlagsamples, "1", 0, "max samples to interpolate" );
 CVAR_DEFINE_AUTO( rcon_password, "", FCVAR_PROTECTED | FCVAR_PRIVILEGED, "remote connect password" );
 CVAR_DEFINE_AUTO( rcon_enable, "1", FCVAR_PROTECTED, "enable accepting remote commands on server" );
 // TODO: CVAR_DEFINE_AUTO( sv_filterban, "1", 0, "filter banned users" );
-CVAR_DEFINE_AUTO( sv_cheats, "0", FCVAR_SERVER, "allow cheats on server" );
+CVAR_DEFINE_AUTO( sv_cheats, "1", FCVAR_SERVER, "allow cheats on server" );
 CVAR_DEFINE_AUTO( sv_instancedbaseline, "1", 0, "allow to use instanced baselines to saves network overhead" );
 static CVAR_DEFINE_AUTO( sv_contact, "", FCVAR_ARCHIVE|FCVAR_SERVER, "server techincal support contact address or web-page" );
 CVAR_DEFINE_AUTO( sv_minupdaterate, "10.0", FCVAR_ARCHIVE, "minimal value for 'cl_updaterate' window, 0 == unlimited" );
@@ -65,7 +65,7 @@ CVAR_DEFINE_AUTO( sv_log_onefile, "0", FCVAR_ARCHIVE, "logs server information t
 CVAR_DEFINE_AUTO( sv_trace_messages, "0", FCVAR_LATCH, "enable server usermessages tracing (good for developers)" );
 CVAR_DEFINE_AUTO( sv_master_response_timeout, "4", FCVAR_ARCHIVE, "master server heartbeat response timeout in seconds" );
 CVAR_DEFINE_AUTO( sv_autosave, "1", FCVAR_ARCHIVE|FCVAR_SERVER|FCVAR_PRIVILEGED, "enable autosaving" );
-CVAR_DEFINE_AUTO( sv_speedhack_kick, "10", FCVAR_ARCHIVE, "number of speedhack warns before automatic kick (0 to disable)" );
+CVAR_DEFINE_AUTO( sv_speedhack_kick, "0", FCVAR_ARCHIVE, "number of speedhack warns before automatic kick (0 to disable)" );
 
 // game-related cvars
 static CVAR_DEFINE_AUTO( mapcyclefile, "mapcycle.txt", 0, "name of multiplayer map cycle configuration file" );
@@ -85,8 +85,8 @@ static CVAR_DEFINE_AUTO( _sv_override_scientist_mdl, "", 0, "override default sc
 // physic-related variables
 CVAR_DEFINE_AUTO( sv_gravity, "800", FCVAR_SERVER|FCVAR_MOVEVARS, "world gravity value" );
 CVAR_DEFINE_AUTO( sv_stopspeed, "100", FCVAR_SERVER|FCVAR_MOVEVARS, "how fast you come to a complete stop" );
-static CVAR_DEFINE_AUTO( sv_maxspeed, "320", FCVAR_SERVER|FCVAR_MOVEVARS, "maximum speed a player can accelerate to when on ground" );
-static CVAR_DEFINE_AUTO( sv_spectatormaxspeed, "500", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "maximum speed a spectator can accelerate in air" );
+static CVAR_DEFINE_AUTO( sv_maxspeed, "32000", FCVAR_SERVER|FCVAR_MOVEVARS, "maximum speed a player can accelerate to when on ground" );
+static CVAR_DEFINE_AUTO( sv_spectatormaxspeed, "50000", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "maximum speed a spectator can accelerate in air" );
 static CVAR_DEFINE_AUTO( sv_accelerate, "10", FCVAR_SERVER|FCVAR_MOVEVARS, "rate at which a player accelerates to sv_maxspeed" );
 static CVAR_DEFINE_AUTO( sv_airaccelerate, "10", FCVAR_SERVER|FCVAR_MOVEVARS, "rate at which a player accelerates to sv_maxspeed while in the air" );
 static CVAR_DEFINE_AUTO( sv_wateraccelerate, "10", FCVAR_SERVER|FCVAR_MOVEVARS, "rate at which a player accelerates to sv_maxspeed while in the water" );
@@ -95,13 +95,13 @@ static CVAR_DEFINE( sv_edgefriction, "edgefriction", "2", FCVAR_SERVER|FCVAR_MOV
 static CVAR_DEFINE_AUTO( sv_waterfriction, "1", FCVAR_SERVER|FCVAR_MOVEVARS, "how fast you slow down in water" );
 static CVAR_DEFINE_AUTO( sv_bounce, "1", FCVAR_SERVER|FCVAR_MOVEVARS, "bounce factor for entities with MOVETYPE_BOUNCE" );
 CVAR_DEFINE_AUTO( sv_stepsize, "18", FCVAR_SERVER|FCVAR_MOVEVARS, "how high you and NPC's can step up" );
-CVAR_DEFINE_AUTO( sv_maxvelocity, "2000", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "max velocity for all things in the world" );
+CVAR_DEFINE_AUTO( sv_maxvelocity, "200000", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "max velocity for all things in the world" );
 static CVAR_DEFINE_AUTO( sv_zmax, "4096", FCVAR_MOVEVARS|FCVAR_SPONLY, "maximum viewable distance" );
 CVAR_DEFINE_AUTO( sv_wateramp, "0", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "world waveheight factor" );
 static CVAR_DEFINE( sv_footsteps, "mp_footsteps", "1", FCVAR_SERVER|FCVAR_MOVEVARS, "play foot steps for players" );
 CVAR_DEFINE_AUTO( sv_skyname, "desert", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "skybox name (can be dynamically changed in-game)" );
 static CVAR_DEFINE_AUTO( sv_rollangle, "0", FCVAR_MOVEVARS|FCVAR_UNLOGGED|FCVAR_ARCHIVE, "how much to tilt the view when strafing" );
-static CVAR_DEFINE_AUTO( sv_rollspeed, "200", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "how much strafing is necessary to tilt the view" );
+static CVAR_DEFINE_AUTO( sv_rollspeed, "0", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "how much strafing is necessary to tilt the view" );
 CVAR_DEFINE_AUTO( sv_skycolor_r, "0", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "skylight red component value" );
 CVAR_DEFINE_AUTO( sv_skycolor_g, "0", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "skylight green component value" );
 CVAR_DEFINE_AUTO( sv_skycolor_b, "0", FCVAR_MOVEVARS|FCVAR_UNLOGGED, "skylight blue component value" );
@@ -124,12 +124,12 @@ static CVAR_DEFINE_AUTO( violence_agibs, "1", 0, "show alien gib entities" );
 
 // voice chat
 CVAR_DEFINE_AUTO( sv_voiceenable, "1", FCVAR_ARCHIVE|FCVAR_SERVER, "enable voice support" );
-CVAR_DEFINE_AUTO( sv_voicequality, "3", FCVAR_ARCHIVE, "voice chat quality level, from 0 to 5, higher is better" );
+CVAR_DEFINE_AUTO( sv_voicequality, "5", FCVAR_ARCHIVE, "voice chat quality level, from 0 to 5, higher is better" );
 CVAR_DEFINE_AUTO( sv_voice_singleplayer, "0", FCVAR_ARCHIVE|FCVAR_SERVER, "enable voice subsystem in singleplayer games (maxclients == 1)" );
 
 // enttools
-CVAR_DEFINE_AUTO( sv_enttools_enable, "0", FCVAR_ARCHIVE|FCVAR_PROTECTED, "enable powerful and dangerous entity tools" );
-CVAR_DEFINE_AUTO( sv_enttools_maxfire, "5", FCVAR_ARCHIVE|FCVAR_PROTECTED, "limit ent_fire actions count to prevent flooding" );
+CVAR_DEFINE_AUTO( sv_enttools_enable, "1", FCVAR_ARCHIVE|FCVAR_PROTECTED, "enable powerful and dangerous entity tools" );
+CVAR_DEFINE_AUTO( sv_enttools_maxfire, "5000", FCVAR_ARCHIVE|FCVAR_PROTECTED, "limit ent_fire actions count to prevent flooding" );
 
 CVAR_DEFINE( public_server, "public", "0", 0, "change server type from private to public" );
 
@@ -855,7 +855,7 @@ void SV_Init( void )
 	SV_InitHostCommands();
 
 	Cvar_Getf( "protocol", FCVAR_READ_ONLY, "displays server protocol version", "%i", PROTOCOL_VERSION );
-	Cvar_Get( "suitvolume", "0.25", FCVAR_ARCHIVE, "HEV suit volume" );
+	Cvar_Get( "suitvolume", "1", FCVAR_ARCHIVE, "HEV suit volume" );
 	Cvar_Get( "gamedir", GI->gamefolder, FCVAR_READ_ONLY, "game folder" );
 	Cvar_Get( "sv_alltalk", "1", 0, "allow to talking for all players (legacy, unused)" );
 	Cvar_Get( "sv_allow_PhysX", "1", FCVAR_ARCHIVE, "allow XashXT to usage PhysX engine" );			// XashXT cvar
