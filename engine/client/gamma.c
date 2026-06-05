@@ -26,11 +26,11 @@ static byte	texgammatable[256];
 static uint	lightgammatable[1024];
 static uint	lineargammatable[1024];
 static uint	screengammatable[1024];
-static CVAR_DEFINE( v_direct, "direct", "0.9", 0, "direct studio lighting" );
-static CVAR_DEFINE( v_texgamma, "texgamma", "2.0", 0, "texgamma amount" );
-static CVAR_DEFINE( v_lightgamma, "lightgamma", "2.5", 0, "lightgamma amount" );
+static CVAR_DEFINE( v_direct, "direct", "1", 0, "direct studio lighting" );
+static CVAR_DEFINE( v_texgamma, "texgamma", "2.2", 0, "texgamma amount" );
+static CVAR_DEFINE( v_lightgamma, "lightgamma", "2.2", 0, "lightgamma amount" );
 static CVAR_DEFINE( v_brightness, "brightness", "0.0", FCVAR_ARCHIVE, "brightness factor" );
-static CVAR_DEFINE( v_gamma, "gamma", "2.5", FCVAR_ARCHIVE, "gamma amount" );
+static CVAR_DEFINE( v_gamma, "gamma", "2.2", FCVAR_ARCHIVE, "gamma amount" );
 
 static void BuildGammaTable( const float gamma, const float brightness, const float texgamma, const float lightgamma )
 {
