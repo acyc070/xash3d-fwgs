@@ -74,12 +74,12 @@ static CVAR_DEFINE_AUTO( host_serverstate, "0", FCVAR_READ_ONLY, "displays curre
 static CVAR_DEFINE_AUTO( host_gameloaded, "0", FCVAR_READ_ONLY, "inidcates a loaded game.dll" );
 static CVAR_DEFINE_AUTO( host_clientloaded, "0", FCVAR_READ_ONLY, "inidcates a loaded client.dll" );
 CVAR_DEFINE_AUTO( host_limitlocal, "0", 0, "apply cl_cmdrate and rate to loopback connection" );
-CVAR_DEFINE( host_maxfps, "fps_max", "72", FCVAR_ARCHIVE|FCVAR_FILTERABLE, "host fps upper limit" );
-CVAR_DEFINE_AUTO( fps_override, "0", FCVAR_FILTERABLE, "unlock higher framerate values, not supported" );
+CVAR_DEFINE( host_maxfps, "fps_max", "0", FCVAR_ARCHIVE|FCVAR_FILTERABLE, "host fps upper limit" );
+CVAR_DEFINE_AUTO( fps_override, "1", FCVAR_FILTERABLE, "unlock higher framerate values, not supported" );
 static CVAR_DEFINE_AUTO( host_framerate, "0", FCVAR_FILTERABLE, "locks frame timing to this value in seconds" );
-static CVAR_DEFINE( host_sleeptime, "sleeptime", "1", FCVAR_ARCHIVE|FCVAR_FILTERABLE, "milliseconds to sleep for each frame. higher values reduce fps accuracy" );
+static CVAR_DEFINE( host_sleeptime, "sleeptime", "0", FCVAR_ARCHIVE|FCVAR_FILTERABLE, "milliseconds to sleep for each frame. higher values reduce fps accuracy" );
 static CVAR_DEFINE_AUTO( host_sleeptime_debug, "0", 0, "print sleeps between frames" );
-CVAR_DEFINE_AUTO( host_allow_materials, "0", FCVAR_LATCH|FCVAR_ARCHIVE, "allow texture replacements from materials/ folder" );
+CVAR_DEFINE_AUTO( host_allow_materials, "1", FCVAR_LATCH|FCVAR_ARCHIVE, "allow texture replacements from materials/ folder" );
 CVAR_DEFINE( con_gamemaps, "con_mapfilter", "1", FCVAR_ARCHIVE, "when true show only maps in game folder" );
 CVAR_DEFINE_AUTO( cl_background, "0", FCVAR_READ_ONLY, "if set to 1, client running a background map" );
 CVAR_DEFINE_AUTO( sv_background, "0", FCVAR_READ_ONLY, "if set to 1, server running a background map" );
