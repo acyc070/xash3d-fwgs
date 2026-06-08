@@ -30,7 +30,7 @@ extern poolhandle_t sndpool;
 #define SOUND_96k       96000 // new sample rate
 #define SOUND_192k      192000 // new sample rate
 
-#define SOUND_DMA_SPEED SOUND_44k // hardware playback rate
+#define SOUND_DMA_SPEED SOUND_192k // hardware playback rate
 
 #define PAINTBUFFER_SIZE 1024
 
