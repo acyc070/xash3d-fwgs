@@ -16,6 +16,7 @@ GNU General Public License for more details.
 #include "netchan.h"
 #include "net_ws.h"
 #include "server.h"
+#include "client.h"
 
 typedef struct master_s
 {
@@ -50,8 +51,9 @@ static struct masterlist_s
 
 static CVAR_DEFINE_AUTO( sv_verbose_heartbeats, "0", 0, "print every heartbeat to console" );
 
-#define HEARTBEAT_SECONDS      ((sv_nat.value > 0.0f) ? 60.0f : 300.0f) // 1 or 5 minutes
-#define RESOLVE_EXPIRE_SECONDS (60.0f) // 1 minute to expire
+#define HEARTBEAT_SECONDS               ((sv_nat.value > 0.0f) ? 60.0f : 300.0f) // 1 or 5 minutes
+#define RESOLVE_EXPIRE_SECONDS          (60.0f)  // positive cache: 1 minute
+#define NEGATIVE_RESOLVE_EXPIRE_SECONDS (300.0f) // negative cache: 5 minutes
 
 static size_t NET_BuildMasterServerScanRequest( char *buf, size_t size, uint32_t key, qboolean nat, const char *filter, connprotocol_t proto )
 {
@@ -63,9 +65,7 @@ static size_t NET_BuildMasterServerScanRequest( char *buf, size_t size, uint32_t
 
 	Q_strncpy( info, filter, remaining );
 
-#ifndef XASH_ALL_SERVERS
 	Info_SetValueForKey( info, "gamedir", GI->gamefolder, remaining );
-#endif // XASH_ALL_SERVERS
 
 	if( proto != PROTO_GOLDSRC )
 	{
@@ -96,11 +96,10 @@ NET_GetMasterHostByName
 */
 static net_gai_state_t NET_GetMasterHostByName( master_t *m )
 {
-	if( host.realtime > m->resolve_time )
-		m->adr.type = 0;
+	if( host.realtime < m->resolve_time )
+		return m->adr.type ? NET_EAI_OK : NET_EAI_NONAME;
 
-	if( m->adr.type )
-		return NET_EAI_OK;
+	m->adr.type = 0;
 
 	net_gai_state_t res = NET_StringToAdrNB( m->address, &m->adr, m->v6only );
 
@@ -110,10 +109,13 @@ static net_gai_state_t NET_GetMasterHostByName( master_t *m )
 		return res;
 	}
 
-	m->adr.type = 0;
 	if( res == NET_EAI_NONAME )
+	{
 		Con_Reportf( "Can't resolve adr: %s\n", m->address );
+		m->resolve_time = host.realtime + NEGATIVE_RESOLVE_EXPIRE_SECONDS;
+	}
 
+	m->adr.type = 0;
 	return res;
 }
 
@@ -298,6 +300,10 @@ static void NET_MasterStaticResponse( const char *url, qboolean success, const b
 	Mem_Free( body );
 
 	Con_Reportf( "masterstatic: %s yielded %d server(s)\n", url, count );
+
+#if !XASH_DEDICATED
+	CL_NotifyServerListResponse();
+#endif
 }
 
 static void NET_MasterStaticQuery( void )
@@ -355,6 +361,28 @@ void NET_MasterHeartbeat( void )
 {
 	if(( !public_server.value && !sv_nat.value ) || svs.maxclients == 1 )
 		return; // only public servers send heartbeats
+
+	if( Host_IsDedicated() && public_server.value )
+	{
+		static qboolean shown_serverlist_notice = false;
+
+		if( !shown_serverlist_notice )
+		{
+			Con_Printf( "\n" );
+			Con_Printf( "********************************************************************************\n" );
+			Con_Printf( "*                                                                              *\n" );
+			Con_Printf( "*  You set `public 1` on a dedicated server.                                   *\n" );
+			Con_Printf( "*                                                                              *\n" );
+			Con_Printf( "*  Legacy UDP master servers are deprecated. To make your server visible in    *\n" );
+			Con_Printf( "*  the new HTTPS-based public server list, open a Pull Request to:             *\n" );
+			Con_Printf( "*                                                                              *\n" );
+			Con_Printf( "*      https://github.com/FWGS/server-list                                     *\n" );
+			Con_Printf( "*                                                                              *\n" );
+			Con_Printf( "********************************************************************************\n" );
+			Con_Printf( "\n" );
+			shown_serverlist_notice = true;
+		}
+	}
 
 	for( master_t *m = ml.head; m; m = m->next )
 	{
@@ -743,24 +771,14 @@ void NET_InitMasters( void )
 
 	Cvar_RegisterVariable( &sv_verbose_heartbeats );
 
-	{ // IPv4-only
-		NET_AddMaster( "mentality.rip:27010" );
-		NET_AddMaster( "ms2.mentality.rip:27010" );
-		NET_AddMaster( "ms3.mentality.rip:27010" );
-	}
-
-	{ // IPv6-only
-		NET_AddMaster( "aaaa.mentality.rip:27010" )->v6only = true;
-		NET_AddMaster( "aaaa.ms2.mentality.rip:27010" )->v6only = true;
-	}
-
 #if 0
 	NET_AddMasterStatic( "http://meltdown.lan/test" );
 #endif
-	NET_AddMasterStatic( "http://fwgs.github.io/server-list" );
+	// NOTE: do not use fwgs.github.io for GitHub pages
+	// because org-wide URL is xash.su (for legacy reasons)
+	NET_AddMasterStatic( "http://xash.su/server-list" );
 	// FIXME: https raw.githubcontent source
 	// FIXME: cloudflare'd sources both HTTP and HTTPS
-
 
 	NET_LoadMasters();
 }
