@@ -149,7 +149,7 @@ static CVAR_DEFINE_AUTO( dsp_coeff_table, "0", FCVAR_ARCHIVE, "select DSP coeffi
 static CVAR_DEFINE_AUTO( room_type, "0",  0, "current room type preset" );
 
 static CVAR_DEFINE( roomwater_type, "waterroom_type", "14", 0, "water room type" );
-static CVAR_DEFINE( hisound, "room_hires", "2", FCVAR_ARCHIVE, "dsp quality. 1 for 22k, 2 for 44k(recommended) and 3 for 96k" );
+static CVAR_DEFINE( hisound, "room_hires", "3", FCVAR_ARCHIVE, "dsp quality. 1 for 22k, 2 for 44k(recommended) and 3 for 96k" );
 
 // underwater/special fx modulations
 static CVAR_DEFINE( sxmod_mod, "room_mod", "0", 0, "stereo amptitude modulation for room" );
