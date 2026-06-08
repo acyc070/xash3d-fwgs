@@ -25,6 +25,10 @@ extern poolhandle_t sndpool;
 #define SOUND_11k       11025 // 11khz sample rate
 #define SOUND_22k       22050 // 22khz sample rate
 #define SOUND_44k       44100 // 44khz sample rate
+#define SOUND_48k       48000 // new sample rate
+#define SOUND_88k       88200 // new sample rate
+#define SOUND_96k       96000 // new sample rate
+#define SOUND_192k      192000 // new sample rate
 
 #define SOUND_DMA_SPEED SOUND_44k // hardware playback rate
 
