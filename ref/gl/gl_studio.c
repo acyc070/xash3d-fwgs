@@ -234,7 +234,7 @@ static qboolean R_StudioComputeBBox( vec3_t bbox[8] )
 
 	// add sequence box to the model box
 	AddPointToBounds( pseqdesc->bbmin, mins, maxs );
-	AddPointToBounds( pseqdesc->bbmax, mins, maxs );
+	AddPointToBounds( pseqdesc->bbmax, maxs, mins );
 	vec3_t studio_mins, studio_maxs;
 	ClearBounds( studio_mins, studio_maxs );
 
@@ -1144,11 +1144,11 @@ static void R_StudioSetupChrome( float *pchrome, int bone, vec3_t normal )
 
 	// calc s coord
 	float n = DotProduct( normal, g_studio.chromeright[bone] );
-	pchrome[0] = (n + 1.0f) * 32.0f;
+	pchrome[0] = (n + 1.0f) * 0.5f;
 
 	// calc t coord
 	n = DotProduct( normal, g_studio.chromeup[bone] );
-	pchrome[1] = (n + 1.0f) * 32.0f;
+	pchrome[1] = (n + 1.0f) * 0.5f;
 }
 
 /*
@@ -2075,8 +2075,8 @@ static void R_StudioDrawPoints( void )
 
 		if( r_studio_drawelements.value )
 		{
-			if( FBitSet( g_nFaceFlags, STUDIO_NF_CHROME ))
-				R_StudioBuildArrayChromeMesh( ptricmds, pstudionorms, s, t, shellscale );
+			if( FBitSet( g_nFaceFlags, STUDIO_NF_CHROME ) )
+				R_StudioBuildArrayChromeMesh( ptricmds, pstudionorms, 1.0f, 1.0f, shellscale );
 			else if( FBitSet( g_nFaceFlags, STUDIO_NF_UV_COORDS ))
 				R_StudioBuildArrayFloatMesh( ptricmds, pstudionorms );
 			else R_StudioBuildArrayNormalMesh( ptricmds, pstudionorms, s, t );
@@ -2085,8 +2085,8 @@ static void R_StudioDrawPoints( void )
 		}
 		else
 		{
-			if( FBitSet( g_nFaceFlags, STUDIO_NF_CHROME ))
-				R_StudioDrawChromeMesh( ptricmds, pstudionorms, s, t, shellscale );
+			if( FBitSet( g_nFaceFlags, STUDIO_NF_CHROME ) )
+				R_StudioDrawChromeMesh( ptricmds, pstudionorms, 1.0f, 1.0f, shellscale );
 			else if( FBitSet( g_nFaceFlags, STUDIO_NF_UV_COORDS ))
 				R_StudioDrawFloatMesh( ptricmds, pstudionorms );
 			else R_StudioDrawNormalMesh( ptricmds, pstudionorms, s, t );
