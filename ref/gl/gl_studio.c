@@ -234,7 +234,7 @@ static qboolean R_StudioComputeBBox( vec3_t bbox[8] )
 
 	// add sequence box to the model box
 	AddPointToBounds( pseqdesc->bbmin, mins, maxs );
-	AddPointToBounds( pseqdesc->bbmax, maxs, mins );
+	AddPointToBounds( pseqdesc->bbmax, mins, maxs );
 	vec3_t studio_mins, studio_maxs;
 	ClearBounds( studio_mins, studio_maxs );
 
