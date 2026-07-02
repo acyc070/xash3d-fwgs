@@ -122,6 +122,8 @@ typedef struct
 // studio-related cvars
 CVAR_DEFINE_AUTO( r_studio_sort_textures, "0", FCVAR_GLCONFIG, "change draw order for additive meshes" );
 CVAR_DEFINE_AUTO( r_studio_drawelements, "1", FCVAR_GLCONFIG, "use glDrawElements for studiomodels" );
+// NEW: Force chrome rendering on all studio models
+CVAR_DEFINE_AUTO( r_force_chrome, "0", 0, "force chrome rendering on all studio models" );
 static cvar_t			*cl_righthand = NULL;
 
 static r_studio_interface_t	*pStudioDraw;
@@ -1975,6 +1977,10 @@ static void R_StudioDrawPoints( void )
 	{
 		g_nFaceFlags = ptexture[pskinref[pmesh[j].skinref]].flags | g_nForceFaceFlags;
 
+		// NEW: Force chrome if cvar is enabled
+		if( r_force_chrome.value )
+			g_nFaceFlags |= STUDIO_NF_CHROME;
+
 		// fill in sortedmesh info
 		g_studio.meshes[j].flags = g_nFaceFlags;
 		g_studio.meshes[j].mesh = &pmesh[j];
@@ -2047,6 +2053,10 @@ static void R_StudioDrawPoints( void )
 		short *ptricmds = (short *)((byte *)m_pStudioHeader + pmesh->triindex);
 
 		g_nFaceFlags = ptexture[pskinref[pmesh->skinref]].flags | g_nForceFaceFlags;
+
+		// NEW: Also apply the cvar to the per-mesh flag for the draw call (redundant but safe)
+		if( r_force_chrome.value )
+			g_nFaceFlags |= STUDIO_NF_CHROME;
 
 		float s = 1.0f / (float)ptexture[pskinref[pmesh->skinref]].width;
 		float t = 1.0f / (float)ptexture[pskinref[pmesh->skinref]].height;
