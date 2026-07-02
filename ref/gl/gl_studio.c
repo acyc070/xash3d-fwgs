@@ -148,7 +148,7 @@ R_StudioInit
 */
 void R_StudioInit( void )
 {
-Cvar_Get( "r_force_chrome", "1", FCVAR_ARCHIVE, "force chrome rendering on all studio models" );
+gEngfuncs.Cvar_Get( "r_force_chrome", "1", FCVAR_ARCHIVE, "force chrome rendering on all studio models" );
 #if XASH_PSVITA
 	// don't do the same array-building work twice since that's what our FFP shim does anyway
 	gEngfuncs.Cvar_FullSet( "r_studio_drawelements", "0", FCVAR_READ_ONLY );
