@@ -7,7 +7,7 @@ fi
 
 RELEASE_NAME=$1
 BRANCH_NAME=$2
-DEFAULT_BRANCH_NAME=master
+DEFAULT_BRANCH_NAME=RenderExperiments
 
 if [ -z "$RELEASE_NAME" ] || [ -z "$BRANCH_NAME" ]; then
 	echo "Invalid arguments"
