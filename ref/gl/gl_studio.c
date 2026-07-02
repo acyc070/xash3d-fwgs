@@ -122,8 +122,9 @@ typedef struct
 // studio-related cvars
 CVAR_DEFINE_AUTO( r_studio_sort_textures, "0", FCVAR_GLCONFIG, "change draw order for additive meshes" );
 CVAR_DEFINE_AUTO( r_studio_drawelements, "1", FCVAR_GLCONFIG, "use glDrawElements for studiomodels" );
-// NEW: Force chrome rendering on all studio models
-//CVAR_DEFINE_AUTO( r_force_chrome, "1", FCVAR_ARCHIVE, "force chrome rendering on all studio models" );
+
+// NEW: pointer to the force-chrome cvar (registered dynamically)
+static convar_t *r_force_chrome_cvar = NULL;
 
 static cvar_t			*cl_righthand = NULL;
 
@@ -148,7 +149,9 @@ R_StudioInit
 */
 void R_StudioInit( void )
 {
-gEngfuncs.Cvar_Get( "r_force_chrome", "1", FCVAR_ARCHIVE, "force chrome rendering on all studio models" );
+	// Register the cvar using the engine API – works reliably inside a DLL.
+	r_force_chrome_cvar = gEngfuncs.Cvar_Get( "r_force_chrome", "1", FCVAR_ARCHIVE, "force chrome rendering on all studio models" );
+
 #if XASH_PSVITA
 	// don't do the same array-building work twice since that's what our FFP shim does anyway
 	gEngfuncs.Cvar_FullSet( "r_studio_drawelements", "0", FCVAR_READ_ONLY );
@@ -1978,8 +1981,8 @@ static void R_StudioDrawPoints( void )
 	{
 		g_nFaceFlags = ptexture[pskinref[pmesh[j].skinref]].flags | g_nForceFaceFlags;
 
-		// NEW: Force chrome if cvar is enabled
-		if( r_force_chrome.value )
+		// Force chrome if cvar is enabled (and cvar exists)
+		if( r_force_chrome_cvar && r_force_chrome_cvar->value )
 			g_nFaceFlags |= STUDIO_NF_CHROME;
 
 		// fill in sortedmesh info
@@ -2055,8 +2058,8 @@ static void R_StudioDrawPoints( void )
 
 		g_nFaceFlags = ptexture[pskinref[pmesh->skinref]].flags | g_nForceFaceFlags;
 
-		// NEW: Also apply the cvar to the per-mesh flag for the draw call (redundant but safe)
-		if( r_force_chrome.value )
+		// Force chrome if cvar is enabled (also for this mesh)
+		if( r_force_chrome_cvar && r_force_chrome_cvar->value )
 			g_nFaceFlags |= STUDIO_NF_CHROME;
 
 		float s = 1.0f / (float)ptexture[pskinref[pmesh->skinref]].width;
