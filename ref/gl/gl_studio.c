@@ -123,7 +123,7 @@ typedef struct
 CVAR_DEFINE_AUTO( r_studio_sort_textures, "0", FCVAR_GLCONFIG, "change draw order for additive meshes" );
 CVAR_DEFINE_AUTO( r_studio_drawelements, "1", FCVAR_GLCONFIG, "use glDrawElements for studiomodels" );
 // NEW: Force chrome rendering on all studio models
-CVAR_DEFINE_AUTO( r_force_chrome, "0", 0, "force chrome rendering on all studio models" );
+CVAR_DEFINE_AUTO( r_force_chrome, "0", FCVAR_GLCONFIG, "force chrome rendering on all studio models" );
 static cvar_t			*cl_righthand = NULL;
 
 static r_studio_interface_t	*pStudioDraw;
