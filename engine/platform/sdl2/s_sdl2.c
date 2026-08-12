@@ -121,7 +121,7 @@ qboolean SNDDMA_Init( void )
 	{
 		.freq = SOUND_DMA_SPEED,
 		.format = AUDIO_S16SYS,
-		.samples = 1024,
+		.samples = 441,
 		.channels = 2,
 		.callback = SDL_SoundCallback,
 	};
