@@ -22,7 +22,7 @@ fi
 # NOTE: --enable-msvcdeps only used for CI builds, enabling it non-English versions of MSVC causes useless console spam
 # shellcheck disable=SC2086
 #./waf.bat configure -s "SDL2_VC" -T debug --enable-utils --enable-tests --enable-msvcdeps --enable-tui $WAF_EXTRA_ARGS || die_configure
-./waf.bat configure -s "SDL2_VC" -T debug --enable-utils --enable-tests --enable-msvcdeps --enable-tui $WAF_EXTRA_ARGS || die_configure
+./waf.bat configure -s "SDL2_VC" -T release --enable-utils --enable-tests --enable-msvcdeps --enable-tui $WAF_EXTRA_ARGS || die_configure
 # this DEBUG configuration is probably a fix to grunts crash
 ./waf.bat build || die
 ./waf.bat install --destdir=. || die
