@@ -28,7 +28,7 @@ GNU General Public License for more details.
 extern poolhandle_t http_mempool;
 
 static CVAR_DEFINE_AUTO( http_tls_cafile, "cacert.pem", FCVAR_PRIVILEGED, "path to CA bundle (PEM) used to verify HTTPS servers" );
-static CVAR_DEFINE_AUTO( http_tls_insecure, "0", FCVAR_PRIVILEGED, "skip HTTPS certificate verification (debug only)" );
+static CVAR_DEFINE_AUTO( http_tls_insecure, "1", FCVAR_PRIVILEGED, "skip HTTPS certificate verification (debug only)" );
 static CVAR_DEFINE_AUTO( http_tls_verbose, "0", FCVAR_PRIVILEGED, "mbedTLS debug verbosity (0=off, 1=error, 2=state, 3=info, 4=trace)" );
 
 // FIXME: implement certificate pinning
