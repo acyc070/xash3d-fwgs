@@ -102,15 +102,15 @@ extern int CL_UPDATE_BACKUP;
 #define SIGNONS		2		// signon messages to receive before connected
 #define INVALID_HANDLE	0xFFFF		// for XashXT cache system
 
-#define MIN_UPDATERATE	10.0f
-#define MAX_UPDATERATE	102.0f
+#define MIN_UPDATERATE	1.0f
+#define MAX_UPDATERATE	1020.0f
 
 #define MAX_EX_INTERP	0.1f
 
 #define MAX_TEXTCHANNELS 8 // must be power of two (GoldSrc uses 4 channels)
 
-#define CL_MIN_RESEND_TIME	1.5f		// mininum time gap (in seconds) before a subsequent connection request is sent.
-#define CL_MAX_RESEND_TIME	20.0f		// max time.  The cvar cl_resend is bounded by these.
+#define CL_MIN_RESEND_TIME	0.1f		// mininum time gap (in seconds) before a subsequent connection request is sent.
+#define CL_MAX_RESEND_TIME	200.0f		// max time.  The cvar cl_resend is bounded by these.
 
 #define cl_serverframetime()	(cl.mtime[0] - cl.mtime[1])
 #define cl_clientframetime()	(cl.time - cl.oldtime)
