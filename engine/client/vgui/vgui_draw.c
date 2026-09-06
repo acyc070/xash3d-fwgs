@@ -36,6 +36,7 @@ typedef struct vgui_static_s
 	qboolean initialized;
 	VGUI_DefaultCursor cursor;
 	vguiapi_t dllFuncs;
+	qboolean from_client; // vgui_support API is provided by the client library
 
 	vgui_reusable_texture_t *textures;
 	int texture_id;
@@ -55,6 +56,7 @@ static vgui_static_t vgui = {
 	false, -1
 };
 static CVAR_DEFINE_AUTO( vgui_utf8, "0", FCVAR_ARCHIVE, "enable utf-8 support for vgui text" );
+static CVAR_DEFINE_AUTO( vgui_key_layout, "1", FCVAR_ARCHIVE, "translate keys sent to vgui through the keyboard layout, like GoldSrc does, so text entries type what's on the keycap" );
 
 static void GAME_EXPORT VGUI_DrawInit( void )
 {
@@ -282,9 +284,15 @@ qboolean VGui_IsActive( void )
 	return vgui.initialized;
 }
 
+qboolean VGui_IsProvidedByClientDll( void )
+{
+	return vgui.from_client;
+}
+
 void VGui_RegisterCvars( void )
 {
 	Cvar_RegisterVariable( &vgui_utf8 );
+	Cvar_RegisterVariable( &vgui_key_layout );
 }
 
 static const vguiapi_t gEngfuncs =
@@ -335,7 +343,7 @@ qboolean VGui_LoadProgs( HINSTANCE hInstance )
 
 		if( !Sys_GetParmFromCmdLine( "-vguiloader", vguiloader ))
 		{
-			Q_strncpy( vguiloader, OS_LIB_PREFIX "vgui_support." OS_LIB_EXT, sizeof( vguiloader ));
+			Q_strncpy( vguiloader, "vgui." OS_LIB_EXT, sizeof( vguiloader ));
 		}
 
 		hInstance = vgui.hInstance = COM_LoadLibrary( vguiloader, false, false );
@@ -355,6 +363,7 @@ qboolean VGui_LoadProgs( HINSTANCE hInstance )
 		F( &vgui.dllFuncs );
 
 		vgui.initialized = vgui.dllFuncs.initialized = true;
+		vgui.from_client = client;
 		Con_Reportf( "%s: initialized legacy API in %s module\n", __func__, client ? "client" : "support" );
 
 		return true;
@@ -409,6 +418,7 @@ void VGui_Shutdown( void )
 	// drop pointers to now unloaded vgui_support
 	vgui.dllFuncs = gEngfuncs;
 	vgui.hInstance = NULL;
+	vgui.from_client = false;
 }
 
 
@@ -575,6 +585,12 @@ void VGui_KeyEvent( int key, int down )
 
 	if( !vgui.dllFuncs.Key )
 		return;
+
+	// VGUI wants the character printed on the keycap, not the physical key position, so text entries work on non-QWERTY layouts
+	// in the future we might want to partially (at least we can control TextEntry and friends implementation now in freevgui)
+	// to handle this through SDL's text mode.
+	if( vgui_key_layout.value )
+		key = Platform_TranslateKeyLayout( key );
 
 	if(( code = VGUI_MapKey( key )) < 0 )
 		return;
