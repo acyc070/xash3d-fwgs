@@ -88,12 +88,14 @@ typedef struct
 	vec3_t		blightvec[MAXSTUDIOBONES];	// bone light vecs
 	vec3_t		lightvalues[MAXSTUDIOVERTS];	// precomputed lightvalues per each shared vertex of submodel
 
-	// chrome stuff
+		// chrome stuff
 	vec3_t		chrome_origin;
 	vec2_t		chrome[MAXSTUDIOVERTS];	// texture coords for surface normals
 	vec3_t		chromeright[MAXSTUDIOBONES];	// chrome vector "right" in bone reference frames
 	vec3_t		chromeup[MAXSTUDIOBONES];	// chrome vector "up" in bone reference frames
 	int		chromeage[MAXSTUDIOBONES];	// last time chrome vectors were updated
+	float		chrome_w;			// width  of bound chrome texture
+	float		chrome_h;			// height of bound chrome texture
 
 	// glowshell stuff
 	int		normaltable[MAXSTUDIOVERTS];	// glowshell uses this
@@ -1117,6 +1119,11 @@ StudioSetupChrome
 
 ====================
 */
+/*
+====================
+StudioSetupChrome
+====================
+*/
 static void R_StudioSetupChrome( float *pchrome, int bone, vec3_t normal )
 {
 	if( g_studio.chromeage[bone] != g_studio.framecount )
@@ -1143,15 +1150,19 @@ static void R_StudioSetupChrome( float *pchrome, int bone, vec3_t normal )
 		g_studio.chromeage[bone] = g_studio.framecount;
 	}
 
+	// half-extents of the bound chrome texture; fall back to the
+	// classic GoldSrc 64x64 assumption if the size was never set
+	float hw = g_studio.chrome_w > 0.0f ? g_studio.chrome_w * 0.5f : 32.0f;
+	float hh = g_studio.chrome_h > 0.0f ? g_studio.chrome_h * 0.5f : 32.0f;
+
 	// calc s coord
 	float n = DotProduct( normal, g_studio.chromeright[bone] );
-	pchrome[0] = (n + 1.0f) * 32.0f;
+	pchrome[0] = (n + 1.0f) * hw;
 
 	// calc t coord
 	n = DotProduct( normal, g_studio.chromeup[bone] );
-	pchrome[1] = (n + 1.0f) * 32.0f;
+	pchrome[1] = (n + 1.0f) * hh;
 }
-
 /*
 ====================
 StudioCalcAttachments
@@ -2851,7 +2862,27 @@ static void R_StudioRenderModel( void )
 		R_StudioRenderFinal( );
 
 		R_StudioSetForceFaceFlags( STUDIO_NF_CHROME );
-		TriSpriteTexture( gEngfuncs.GetDefaultSprite( REF_CHROME_SPRITE ), 0 );
+
+		model_t *chromeSprite = gEngfuncs.GetDefaultSprite( REF_CHROME_SPRITE );
+		TriSpriteTexture( chromeSprite, 0 );
+
+		// tell StudioSetupChrome what size this sprite actually is
+		if( chromeSprite && chromeSprite->type == mod_sprite )
+		{
+			msprite_t *psprite = chromeSprite->cache.data;
+			if( psprite )
+			{
+				g_studio.chrome_w = (float)psprite->width;
+				g_studio.chrome_h = (float)psprite->height;
+			}
+		}
+		else
+		{
+			// unknown -> keep the classic 64x64 assumption
+			g_studio.chrome_w = 0.0f;
+			g_studio.chrome_h = 0.0f;
+		}
+
 		RI.currententity->curstate.renderfx = kRenderFxGlowShell;
 
 		R_StudioRenderFinal( );
