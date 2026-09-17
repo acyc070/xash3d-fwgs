@@ -2870,19 +2870,25 @@ static void R_StudioRenderModel( void )
 		if( chromeSprite && chromeSprite->type == mod_sprite )
 		{
 			msprite_t *psprite = chromeSprite->cache.data;
-			if( psprite )
+
+			if( psprite && psprite->numframes > 0 && psprite->frames[0].frameptr )
 			{
-				g_studio.chrome_w = (float)psprite->width;
-				g_studio.chrome_h = (float)psprite->height;
+				g_studio.chrome_w = (float)psprite->frames[0].frameptr->width;
+				g_studio.chrome_h = (float)psprite->frames[0].frameptr->height;
+			}
+			else
+			{
+				// no valid frame -> keep classic 64x64 assumption
+				g_studio.chrome_w = 0.0f;
+				g_studio.chrome_h = 0.0f;
 			}
 		}
 		else
 		{
-			// unknown -> keep the classic 64x64 assumption
+			// unknown -> keep classic 64x64 assumption
 			g_studio.chrome_w = 0.0f;
 			g_studio.chrome_h = 0.0f;
 		}
-
 		RI.currententity->curstate.renderfx = kRenderFxGlowShell;
 
 		R_StudioRenderFinal( );
