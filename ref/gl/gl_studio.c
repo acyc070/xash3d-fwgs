@@ -1333,7 +1333,31 @@ static void R_StudioLighting( float *lv, int bone, int flags, vec3_t normal )
 
 	if( FBitSet( flags, STUDIO_NF_FLATSHADE ))
 	{
-		illum += g_studio.shadelight * 0.8f;
+		float lightcos;
+		if( bone != -1 ) lightcos = DotProduct( normal, g_studio.blightvec[bone] );
+		else lightcos = DotProduct( normal, g_studio.lightvec ); // -1 colinear, 1 opposite
+		if( lightcos > 1.0f ) lightcos = 1.0f;
+
+		illum += g_studio.shadelight;
+
+		float r = SHADE_LAMBERT;
+
+ 		// do modified hemispherical lighting
+		if( r <= 1.0f )
+		{
+			r += 1.0f;
+			lightcos = (( r - 1.0f ) - lightcos) / r;
+			if( lightcos > 0.0f )
+				illum += g_studio.shadelight * lightcos;
+		}
+		else
+		{
+			lightcos = (lightcos + ( r - 1.0f )) / r;
+			if( lightcos > 0.0f )
+				illum -= g_studio.shadelight * lightcos;
+		}
+
+		illum = Q_max( illum, 0.0f );
 	}
 	else
 	{
