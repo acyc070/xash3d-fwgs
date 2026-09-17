@@ -125,6 +125,7 @@ typedef struct
 CVAR_DEFINE_AUTO( r_studio_sort_textures, "0", FCVAR_GLCONFIG, "change draw order for additive meshes" );
 CVAR_DEFINE_AUTO( r_studio_drawelements, "1", FCVAR_GLCONFIG, "use glDrawElements for studiomodels" );
 CVAR_DEFINE_AUTO( r_studio_builtin_renderer, "0", 0, "use built-in studio model renderer instead of the one provided by client library (debugging)" );
+CVAR_DEFINE_AUTO( r_studio_force_chrome, "0", FCVAR_GLCONFIG, "force chrome mesh rendering" );
 static cvar_t			*cl_righthand = NULL;
 
 static r_studio_interface_t	*pStudioDraw;
@@ -2844,6 +2845,26 @@ static void R_StudioRenderFinal( void )
 	R_StudioRestoreRenderer();
 }
 
+static void R_StudioBindChromeSprite( void )
+{
+	model_t *chromeSprite = gEngfuncs.GetDefaultSprite( REF_CHROME_SPRITE );
+	TriSpriteTexture( chromeSprite, 0 );
+
+	if( chromeSprite && chromeSprite->type == mod_sprite )
+	{
+		msprite_t *psprite = chromeSprite->cache.data;
+
+		if( psprite && psprite->numframes > 0 && psprite->frames[0].frameptr )
+		{
+			g_studio.chrome_w = (float)psprite->frames[0].frameptr->width;
+			g_studio.chrome_h = (float)psprite->frames[0].frameptr->height;
+			return;
+		}
+	}
+
+	g_studio.chrome_w = 0.0f;
+	g_studio.chrome_h = 0.0f;
+}
 /*
 ====================
 StudioRenderModel
@@ -2854,7 +2875,15 @@ static void R_StudioRenderModel( void )
 {
 	R_StudioSetChromeOrigin();
 	R_StudioSetForceFaceFlags( 0 );
-
+	
+	if( r_studio_force_chrome.value )
+	{
+		R_StudioSetForceFaceFlags( STUDIO_NF_CHROME );
+		R_StudioBindChromeSprite();
+		R_StudioRenderFinal();
+		return;
+	}
+	
 	if( RI.currententity->curstate.renderfx == kRenderFxGlowShell )
 	{
 		RI.currententity->curstate.renderfx = kRenderFxNone;
