@@ -50,18 +50,18 @@ CVAR_DEFINE( cl_draw_beams, "r_drawbeams", "1", FCVAR_CHEAT, "render beams" );
 
 static CVAR_DEFINE_AUTO( rcon_address, "", FCVAR_PRIVILEGED, "remote control address" );
 CVAR_DEFINE_AUTO( cl_timeout, "60", 0, "connect timeout (in-seconds)" );
-CVAR_DEFINE_AUTO( cl_nopred, "0", FCVAR_USERINFO, "disable client movement prediction" );
+CVAR_DEFINE_AUTO( cl_nopred, "1", FCVAR_USERINFO, "disable client movement prediction" );
 static CVAR_DEFINE_AUTO( cl_nodelta, "0", 0, "disable delta-compression for server messages" );
 CVAR_DEFINE( cl_crosshair, "crosshair", "1", FCVAR_ARCHIVE, "show weapon chrosshair" );
 static CVAR_DEFINE_AUTO( cl_cmdbackup, "10", FCVAR_ARCHIVE, "how many additional history commands are sent" );
 CVAR_DEFINE_AUTO( cl_showerror, "0", FCVAR_ARCHIVE, "show prediction error" );
 CVAR_DEFINE_AUTO( cl_bmodelinterp, "1", 0, "enable bmodel interpolation" );
 static CVAR_DEFINE_AUTO( cl_lightstyle_lerping, "0", FCVAR_ARCHIVE, "enables animated light lerping (perfomance option)" );
-CVAR_DEFINE_AUTO( cl_idealpitchscale, "0.8", 0, "how much to look up/down slopes and stairs when not using freelook" );
+CVAR_DEFINE_AUTO( cl_idealpitchscale, "1.0", 0, "how much to look up/down slopes and stairs when not using freelook" );
 CVAR_DEFINE_AUTO( cl_nosmooth, "0", 0, "disable smooth up stair climbing" );
-CVAR_DEFINE_AUTO( cl_smoothtime, "0.1", 0, "time to smooth up" );
-CVAR_DEFINE_AUTO( cl_clockreset, "0.1", 0, "frametime delta maximum value before reset" );
-static CVAR_DEFINE_AUTO( cl_fixtimerate, "7.5", 0, "time in msec to client clock adjusting" );
+CVAR_DEFINE_AUTO( cl_smoothtime, "0.0", 0, "time to smooth up" );
+CVAR_DEFINE_AUTO( cl_clockreset, "0.0", 0, "frametime delta maximum value before reset" );
+static CVAR_DEFINE_AUTO( cl_fixtimerate, "0.0", 0, "time in msec to client clock adjusting" );
 CVAR_DEFINE_AUTO( hud_fontscale, "1.0", FCVAR_ARCHIVE|FCVAR_LATCH, "scale hud font texture" );
 CVAR_DEFINE_AUTO( hud_fontrender, "0", FCVAR_ARCHIVE, "hud font render mode (0: additive, 1: holes, 2: trans)" );
 CVAR_DEFINE_AUTO( hud_scale, "0", FCVAR_ARCHIVE|FCVAR_LATCH, "scale hud at current resolution" );
@@ -70,12 +70,12 @@ CVAR_DEFINE_AUTO( cl_solid_players, "1", 0, "Make all players not solid (can't t
 CVAR_DEFINE_AUTO( cl_updaterate, "20", FCVAR_USERINFO|FCVAR_ARCHIVE, "refresh rate of server messages" );
 CVAR_DEFINE_AUTO( cl_showevents, "0", FCVAR_ARCHIVE, "show events playback" );
 CVAR_DEFINE_AUTO( cl_cmdrate, "30", FCVAR_ARCHIVE, "Max number of command packets sent to server per second" );
-CVAR_DEFINE( cl_interp, "ex_interp", "0.1", FCVAR_ARCHIVE | FCVAR_FILTERABLE, "Interpolate object positions starting this many seconds in past" );
+CVAR_DEFINE( cl_interp, "ex_interp", "0.0", FCVAR_ARCHIVE | FCVAR_FILTERABLE, "Interpolate object positions starting this many seconds in past" );
 CVAR_DEFINE_AUTO( cl_nointerp, "0", 0, "disable interpolation of entities and players" );
 static CVAR_DEFINE_AUTO( cl_dlmax, "0", FCVAR_USERINFO|FCVAR_ARCHIVE, "max allowed outcoming fragment size" );
 static CVAR_DEFINE_AUTO( cl_upmax, "508", FCVAR_ARCHIVE, "max allowed incoming fragment size" );
 
-CVAR_DEFINE_AUTO( cl_lw, "1", FCVAR_ARCHIVE|FCVAR_USERINFO, "enable client weapon predicting" );
+CVAR_DEFINE_AUTO( cl_lw, "0", FCVAR_ARCHIVE|FCVAR_USERINFO, "enable client weapon predicting" );
 CVAR_DEFINE_AUTO( cl_charset, "utf-8", FCVAR_ARCHIVE, "1-byte charset to use (iconv style)" );
 CVAR_DEFINE_AUTO( cl_trace_consistency, "0", 0, "enable consistency info tracing (good for developers)" );
 CVAR_DEFINE_AUTO( cl_trace_stufftext, "0", 0, "enable stufftext (server-to-client console commands) tracing (good for developers)" );
@@ -85,7 +85,7 @@ static CVAR_DEFINE_AUTO( cl_nat, "0", 0, "show servers running under NAT" );
 CVAR_DEFINE_AUTO( hud_utf8, "0", FCVAR_ARCHIVE, "Use utf-8 encoding for hud text" );
 CVAR_DEFINE_AUTO( ui_renderworld, "0", FCVAR_ARCHIVE, "render world when UI is visible" );
 static CVAR_DEFINE_AUTO( cl_maxframetime, "0", 0, "set deadline timer for client rendering to catch freezes" );
-CVAR_DEFINE_AUTO( cl_fixmodelinterpolationartifacts, "1", 0, "try to fix up models interpolation on a moving platforms (monsters on trains for example)" );
+CVAR_DEFINE_AUTO( cl_fixmodelinterpolationartifacts, "0", 0, "try to fix up models interpolation on a moving platforms (monsters on trains for example)" );
 
 //
 // userinfo
@@ -3728,7 +3728,7 @@ static void CL_InitLocal( void )
 	Cvar_RegisterVariable( &topcolor );
 	Cvar_RegisterVariable( &bottomcolor );
 	Cvar_RegisterVariable( &cl_lw );
-	Cvar_Get( "cl_lc", "1", FCVAR_ARCHIVE|FCVAR_USERINFO, "enable lag compensation" );
+	Cvar_Get( "cl_lc", "0", FCVAR_ARCHIVE|FCVAR_USERINFO, "enable lag compensation" );
 	Cvar_Get( "password", "", FCVAR_USERINFO, "server password" );
 	Cvar_Get( "team", "", FCVAR_USERINFO, "player team" );
 	Cvar_Get( "skin", "", FCVAR_USERINFO, "player skin" );
