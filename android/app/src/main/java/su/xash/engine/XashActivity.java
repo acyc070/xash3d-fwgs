@@ -10,6 +10,9 @@ import android.os.Environment;
 import android.provider.Settings.Secure;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.WindowInsets;
+import android.view.DisplayCutout;
 import android.view.WindowManager;
 
 import org.libsdl.app.SDLActivity;
@@ -23,6 +26,7 @@ import java.util.List;
 
 public class XashActivity extends SDLActivity {
 	private boolean mUseVolumeKeys;
+	private volatile float[] mWindowInsets = new float[4];
 	private String mPackageName;
 	private static final String TAG = "XashActivity";
 
@@ -37,6 +41,52 @@ public class XashActivity extends SDLActivity {
 		}
 
 		SoftKeyboardPan.assistActivity(this);
+
+		// mSurface is null if SDL failed to start and shows its error dialog
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && mSurface != null) {
+			mSurface.setOnApplyWindowInsetsListener((view, insets) -> {
+				updateWindowInsets(view, insets);
+				return insets;
+			});
+			mSurface.addOnLayoutChangeListener((view, l, t, r, b, ol, ot, or, ob) ->
+				updateWindowInsets(view, view.getRootWindowInsets()));
+			mSurface.requestApplyInsets();
+		}
+	}
+
+	// JNI reads a snapshot; all View access stays on Android's UI thread.
+	private float[] getWindowInsets() {
+		return mWindowInsets;
+	}
+
+	private void updateWindowInsets(View surface, WindowInsets insets) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
+			return;
+
+		if (insets == null || surface.getWidth() <= 0 || surface.getHeight() <= 0)
+			return;
+
+		// Only the display cutout: system bars are hidden in immersive mode and reporting them while they're swiped in would shift the whole layout.
+		int left = 0, top = 0, right = 0, bottom = 0;
+		DisplayCutout cutout = insets.getDisplayCutout();
+		if (cutout != null) {
+			left = cutout.getSafeInsetLeft();
+			top = cutout.getSafeInsetTop();
+			right = cutout.getSafeInsetRight();
+			bottom = cutout.getSafeInsetBottom();
+		}
+		// Insets are relative to the window. Remove space already outside SDL's
+		// surface instead of applying it twice on launchers that fit system bars.
+		View decor = getWindow().getDecorView();
+		int[] origin = new int[2];
+		surface.getLocationInWindow(origin);
+		float width = surface.getWidth(), height = surface.getHeight();
+		mWindowInsets = new float[] {
+			Math.max(0, left - origin[0]) / width,
+			Math.max(0, top - origin[1]) / height,
+			Math.max(0, origin[0] + width - decor.getWidth() + right) / width,
+			Math.max(0, origin[1] + height - decor.getHeight() + bottom) / height
+		};
 	}
 
 	@Override
